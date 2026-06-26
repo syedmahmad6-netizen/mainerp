@@ -23,12 +23,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-/**
- * School Admin Panel — Principals, Managers, Teachers, Accountants
- * Access: {school}.gnosis.ac.pk/admin
- * Who:    principal, school_manager, vice_principal, teacher, accountant, librarian
- * Scope:  TENANT SCOPED — IdentifyTenant middleware fires first
- */
 class SchoolAdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -56,16 +50,15 @@ class SchoolAdminPanelProvider extends PanelProvider
                 SchoolOverviewWidget::class,
             ])
             ->navigationGroups([
-                NavigationGroup::make('Academic Setup')
-                    ->icon('heroicon-o-academic-cap'),
+                NavigationGroup::make('Academic Setup'),
                 NavigationGroup::make('People')
-                    ->icon('heroicon-o-users')
                     ->collapsed(),
+                NavigationGroup::make('Academics'),
                 NavigationGroup::make('Finance')
-                    ->icon('heroicon-o-banknotes')
                     ->collapsed(),
                 NavigationGroup::make('Communication')
-                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                    ->collapsed(),
+                NavigationGroup::make('Reports')
                     ->collapsed(),
             ])
             ->middleware([
@@ -78,15 +71,13 @@ class SchoolAdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                IdentifyTenant::class, // 🔑 Resolve school from subdomain
+                IdentifyTenant::class,
             ])
             ->authMiddleware([Authenticate::class]);
     }
 
     public function boot(): void
     {
-        // Inject the impersonation banner at the very top of the school panel
-        // Only shows when Super Admin has entered a school via "Access Panel"
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_START,
             fn (): string => Blade::render('<x-impersonation-banner />')

@@ -27,8 +27,8 @@ class TimeSlotResource extends Resource {
         return $table->columns([
             Tables\Columns\TextColumn::make('slot_order')->label('#')->sortable(),
             Tables\Columns\TextColumn::make('name')->label('Period')->sortable()->weight('bold'),
-            Tables\Columns\TextColumn::make('start_time')->label('Start')->formatStateUsing(fn($s)=>$s?Carbon::parse($s)->format('h:i A'):'—'),
-            Tables\Columns\TextColumn::make('end_time')->label('End')->formatStateUsing(fn($s)=>$s?Carbon::parse($s)->format('h:i A'):'—'),
+            Tables\Columns\TextColumn::make('start_time')->label('Start')->formatStateUsing(fn($state)=>$state?Carbon::parse($state)->format('h:i A'):'—'),
+            Tables\Columns\TextColumn::make('end_time')->label('End')->formatStateUsing(fn($state)=>$state?Carbon::parse($state)->format('h:i A'):'—'),
             Tables\Columns\TextColumn::make('duration')->label('Duration')->getStateUsing(fn(TimeSlot $r)=>Carbon::parse($r->start_time)->diffInMinutes(Carbon::parse($r->end_time)).' min'),
             Tables\Columns\IconColumn::make('is_break')->label('Break')->boolean(),
         ])->actions([Tables\Actions\EditAction::make(),Tables\Actions\DeleteAction::make()])->defaultSort('slot_order');

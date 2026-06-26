@@ -299,14 +299,7 @@ class StudentResource extends Resource
                         'withdrawn'   => 'Withdrawn',
                     ]),
 
-                Tables\Filters\SelectFilter::make('gender')
-                    ->relationship('user', 'gender')
-                    ->options(['male' => 'Male', 'female' => 'Female'])
-                    ->query(fn (Builder $query, array $data) =>
-                        $query->when($data['value'], fn ($q, $v) =>
-                            $q->where('gender', $v)
-                        )
-                    ),
+            
             ])
 
             ->actions([

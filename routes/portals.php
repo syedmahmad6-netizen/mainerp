@@ -1,11 +1,16 @@
 <?php
+
 use App\Http\Controllers\Portal\ParentPortalController;
 use App\Http\Controllers\Portal\PortalAuthController;
 use App\Http\Controllers\Portal\StudentPortalController;
+use App\Http\Controllers\SchoolLandingController;
 use App\Http\Middleware\IdentifyTenant;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([IdentifyTenant::class])->group(function () {
+
+    Route::get('/', [SchoolLandingController::class, 'index'])->name('school.home');
+
     Route::get('/login',   [PortalAuthController::class,'showLogin'])->name('portal.login');
     Route::post('/login',  [PortalAuthController::class,'login'])->name('portal.login.post');
     Route::post('/logout', [PortalAuthController::class,'logout'])->name('portal.logout');

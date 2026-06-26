@@ -137,7 +137,6 @@ class MarkAttendance extends Page
                             ->itemLabel(fn (array $state) => $state['student_name'] ?? 'Student')
                             ->defaultItems(0)
                             ->visible(fn (Forms\Get $get) => ! empty($get('section_id')))
-                            ->emptyLabel('No students found in this section.'),
                     ]),
             ])
             ->statePath('data');

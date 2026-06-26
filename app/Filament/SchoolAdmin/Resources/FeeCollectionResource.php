@@ -244,7 +244,7 @@ class FeeCollectionResource extends Resource
             ->headerActions([
                 Tables\Actions\Action::make('generate_monthly_fees')
                     ->label('Generate Monthly Fees')
-                    ->icon('heroicon-o-calendar-plus')
+                    ->icon('heroicon-o-calendar')
                     ->color('primary')
                     ->form([
                         Forms\Components\DatePicker::make('fee_month')
