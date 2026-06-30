@@ -118,7 +118,7 @@ class AttendanceResource extends Resource
                         'leave'   => 'info',
                         default   => 'gray',
                     })
-                    ->formatStateUsing(fn ($s) => ucfirst($s)),
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
 
                 Tables\Columns\TextColumn::make('teacher.name')
                     ->label('Marked By')

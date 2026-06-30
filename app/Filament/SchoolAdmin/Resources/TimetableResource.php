@@ -47,9 +47,9 @@ class TimetableResource extends Resource {
         return $table->columns([
             Tables\Columns\TextColumn::make('section.schoolClass.name')->label('Class')->sortable()->searchable(),
             Tables\Columns\TextColumn::make('section.name')->label('Section')->badge()->color('primary'),
-            Tables\Columns\TextColumn::make('day_of_week')->label('Day')->formatStateUsing(fn($s)=>Timetable::dayName($s))->badge()->color('gray')->sortable(),
+            Tables\Columns\TextColumn::make('day_of_week')->label('Day')->formatStateUsing(fn($state)=>Timetable::dayName($state))->badge()->color('gray')->sortable(),
             Tables\Columns\TextColumn::make('timeSlot.name')->label('Period')->sortable(),
-            Tables\Columns\TextColumn::make('timeSlot.start_time')->label('Time')->formatStateUsing(fn($s)=>$s?\Carbon\Carbon::parse($s)->format('h:i A'):'—'),
+            Tables\Columns\TextColumn::make('timeSlot.start_time')->label('Time')->formatStateUsing(fn($state)=>$state?\Carbon\Carbon::parse($state)->format('h:i A'):'—'),
             Tables\Columns\TextColumn::make('subject.name')->label('Subject')->badge()->color('info')->searchable(),
             Tables\Columns\TextColumn::make('teacher.name')->label('Teacher')->searchable(),
         ])->filters([

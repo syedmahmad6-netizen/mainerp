@@ -36,7 +36,7 @@ class AnnouncementResource extends Resource {
                     ->options(['all'=>'Everyone','parents'=>'Parents Only','students'=>'Students Only','teachers'=>'Teachers Only','staff'=>'Staff Only'])
                     ->default('all')->required(),
                 Forms\Components\Select::make('section_id')->label('Class / Section (leave blank for school-wide)')
-                    ->options(fn() => Section::with('schoolClass')->get()->mapWithKeys(fn($s) => [$s->id => $s->schoolClass->name.' – '.$s->name]))
+                    ->options(fn() => Section::with('schoolClass')->get()->mapWithKeys(fn($state) => [$state->id => $state->schoolClass->name.' – '.$state->name]))
                     ->searchable()->nullable()->placeholder('School-Wide')
                     ->helperText('Leave blank to show to everyone. Select a section to target one class.'),
                 Forms\Components\DateTimePicker::make('published_at')->label('Publish At')->default(now())->helperText('Leave as now to publish immediately.'),
@@ -53,12 +53,15 @@ class AnnouncementResource extends Resource {
                 ->formatStateUsing(fn(Announcement $r) => $r->type_label),
             Tables\Columns\TextColumn::make('title')->label('Title')->searchable()->sortable()->limit(50)->weight('bold'),
             Tables\Columns\TextColumn::make('target_role')->label('Audience')->badge()->color('gray')
-                ->formatStateUsing(fn($s) => match($s){'all'=>'Everyone','parents'=>'Parents','students'=>'Students','teachers'=>'Teachers','staff'=>'Staff',default=>$s}),
+                ->formatStateUsing(fn($state) => match($state){'all'=>'Everyone','parents'=>'Parents','students'=>'Students','teachers'=>'Teachers','staff'=>'Staff',default=>$state}),
             Tables\Columns\TextColumn::make('scope_attribute')->label('Scope')
                 ->getStateUsing(fn(Announcement $r) => $r->scope)->badge()->color('primary'),
             Tables\Columns\TextColumn::make('createdBy.name')->label('Posted By')->toggleable(),
             Tables\Columns\TextColumn::make('published_at')->label('Published')->dateTime('d M Y H:i')->sortable(),
-            Tables\Columns\TextColumn::make('expires_at')->label('Expires')->dateTime('d M Y')->default('Never')->toggleable(),
+            Tables\Columns\TextColumn::make('expires_at')
+    ->label('Expires')
+    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d M Y') : 'Never')
+    ->toggleable(),
             Tables\Columns\TextColumn::make('reads_count')->label('Read By')->counts('reads')->badge()->color('success'),
             Tables\Columns\IconColumn::make('is_archived')->label('Archived')->boolean()->toggleable(isToggledHiddenByDefault:true),
         ])->filters([

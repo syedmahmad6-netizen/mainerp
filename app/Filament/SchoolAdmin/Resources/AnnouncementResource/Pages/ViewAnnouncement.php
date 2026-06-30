@@ -18,7 +18,7 @@ class ViewAnnouncement extends ViewRecord {
                     ->color(fn(string $s) => match($s){'general'=>'info','urgent'=>'danger','holiday'=>'success','event'=>'warning','exam_schedule'=>'primary',default=>'gray'})
                     ->formatStateUsing(fn(Announcement $r) => $r->type_label),
                 TextEntry::make('target_role')->label('Audience')
-                    ->formatStateUsing(fn($s) => match($s){'all'=>'Everyone','parents'=>'Parents Only','students'=>'Students Only','teachers'=>'Teachers Only','staff'=>'Staff Only',default=>$s}),
+                    ->formatStateUsing(fn($state) => match($state){'all'=>'Everyone','parents'=>'Parents Only','students'=>'Students Only','teachers'=>'Teachers Only','staff'=>'Staff Only',default=>$state}),
                 TextEntry::make('scope_attribute')->label('Scope')->getStateUsing(fn(Announcement $r) => $r->scope),
                 TextEntry::make('createdBy.name')->label('Posted By'),
                 TextEntry::make('published_at')->label('Published')->dateTime('d M Y, h:i A'),

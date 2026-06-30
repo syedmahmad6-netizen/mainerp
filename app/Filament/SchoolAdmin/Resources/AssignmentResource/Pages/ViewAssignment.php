@@ -20,9 +20,9 @@ class ViewAssignment extends ViewRecord {
                 TextEntry::make('section.schoolClass.name')->label('Class')->badge()->color('primary'),
                 TextEntry::make('teacher.name')->label('Assigned By'),
                 TextEntry::make('due_date')->label('Due Date')->date('d M Y'),
-                TextEntry::make('status')->badge()->color(fn($s)=>$s==='active'?'success':'gray'),
+                TextEntry::make('status')->badge()->color(fn($state)=>$state==='active'?'success':'gray'),
                 TextEntry::make('allow_submission')->label('Online Submission')
-                    ->formatStateUsing(fn($s)=>$s?'✅ Enabled':'❌ Disabled'),
+                    ->formatStateUsing(fn($state)=>$state?'✅ Enabled':'❌ Disabled'),
                 TextEntry::make('description')->label('Instructions')->columnSpanFull()->default('No instructions provided.'),
             ]),
             Section::make('Submissions')->schema([

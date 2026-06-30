@@ -45,7 +45,7 @@ class AttendanceReport extends Page
 
             Forms\Components\Select::make('section_id')
                 ->label('Class & Section')
-                ->options(fn () => Section::with('schoolClass')->get()->mapWithKeys(fn ($s) => [$s->id => $s->schoolClass->name . ' – ' . $s->name]))
+                ->options(fn () => Section::with('schoolClass')->get()->mapWithKeys(fn ($state) => [$state->id => $state->schoolClass->name . ' – ' . $state->name]))
                 ->required()
                 ->searchable(),
 
@@ -89,7 +89,7 @@ class AttendanceReport extends Page
             });
 
             if ($data['report_type'] === 'low_attendance') {
-                $this->report = $allStudents->filter(fn ($s) => $s['status'] === 'low')->values()->toArray();
+                $this->report = $allStudents->filter(fn ($state) => $state['status'] === 'low')->values()->toArray();
             } else {
                 $this->report = $allStudents->toArray();
             }

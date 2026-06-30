@@ -67,7 +67,7 @@ class ViewTeacher extends ViewRecord
                                 ->label('Employment Type')
                                 ->badge()
                                 ->color('info')
-                                ->formatStateUsing(fn ($s) => ucfirst(str_replace('_', ' ', $s))),
+                                ->formatStateUsing(fn ($state) => ucfirst(str_replace('_', ' ', $state))),
                         ])->columnSpan(3),
                     ]),
                 ]),
@@ -95,7 +95,7 @@ class ViewTeacher extends ViewRecord
 
                     TextEntry::make('gender')
                         ->label('Gender')
-                        ->formatStateUsing(fn ($s) => ucfirst($s ?? '—')),
+                        ->formatStateUsing(fn ($state) => ucfirst($state ?? '—')),
 
                     TextEntry::make('joining_date')
                         ->label('Joined On')
@@ -132,7 +132,7 @@ class ViewTeacher extends ViewRecord
 
                     TextEntry::make('user.is_active')
                         ->label('Login Status')
-                        ->formatStateUsing(fn ($s) => $s ? '✅ Active' : '❌ Inactive'),
+                        ->formatStateUsing(fn ($state) => $state ? '✅ Active' : '❌ Inactive'),
                 ]),
 
             // ── Salary (shown collapsed) ──────────────────────────────────
