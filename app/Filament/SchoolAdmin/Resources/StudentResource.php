@@ -178,7 +178,12 @@ class StudentResource extends Resource
                     Forms\Components\TextInput::make('email')
                         ->label('Student Email (optional)')
                         ->email()
-                        ->unique('users', 'email')
+                        ->unique(
+                            table: 'users',
+                            column: 'email',
+                            modifyRuleUsing: fn (\Illuminate\Validation\Rules\Unique $rule, ?\Illuminate\Database\Eloquent\Model $record) =>
+                                $record?->user ? $rule->ignore($record->user->id) : $rule,
+                        )
                         ->helperText('Leave blank to auto-generate a login email.')
                         ->visible(function (Forms\Get $get) {
                             $sectionId = $get('current_section_id');

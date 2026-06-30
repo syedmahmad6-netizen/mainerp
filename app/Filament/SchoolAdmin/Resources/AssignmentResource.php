@@ -49,7 +49,7 @@ class AssignmentResource extends Resource {
             Tables\Columns\TextColumn::make('due_date')->label('Due Date')->date('d M Y')->sortable()
                 ->color(fn(Assignment $r)=>$r->isOverdue()?'danger':''),
             Tables\Columns\TextColumn::make('submissions_count')->label('Submissions')->counts('submissions')->badge()->color('success'),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn($s)=>$s==='active'?'success':'gray'),
+            Tables\Columns\TextColumn::make('status')->badge()->color(fn($state)=>$state==='active'?'success':'gray'),
         ])->filters([
             Tables\Filters\SelectFilter::make('section_id')->label('Section')
                 ->options(fn()=>Section::with('schoolClass')->get()->mapWithKeys(fn($s)=>[$s->id=>$s->schoolClass->name.' – '.$s->name])),

@@ -203,10 +203,9 @@ class FeeCollectionResource extends Resource
                     ->toggleable(),
 
                 Tables\Columns\TextColumn::make('paid_date')
-                    ->label('Paid On')
-                    ->date('d M Y')
-                    ->default('—')
-                    ->toggleable(),
+    ->label('Paid On')
+    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('d M Y') : '—')
+    ->toggleable(),
             ])
 
             ->filters([

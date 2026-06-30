@@ -49,7 +49,7 @@ class AnnouncementResource extends Resource {
     public static function table(Table $table): Table {
         return $table->columns([
             Tables\Columns\TextColumn::make('type')->badge()
-                ->color(fn(string $s) => match($s){'general'=>'info','urgent'=>'danger','holiday'=>'success','event'=>'warning','exam_schedule'=>'primary',default=>'gray'})
+                ->color(fn(string $state) => match($state){'general'=>'info','urgent'=>'danger','holiday'=>'success','event'=>'warning','exam_schedule'=>'primary',default=>'gray'})
                 ->formatStateUsing(fn(Announcement $r) => $r->type_label),
             Tables\Columns\TextColumn::make('title')->label('Title')->searchable()->sortable()->limit(50)->weight('bold'),
             Tables\Columns\TextColumn::make('target_role')->label('Audience')->badge()->color('gray')
