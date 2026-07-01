@@ -63,14 +63,17 @@ class ResultSummary extends Page {
             return ["student_id"=>$student->id,"name"=>$student->user->name??"—","admission_no"=>$student->admission_number??"—","subjects"=>$subjectBreakdown,"total_obtained"=>$totalObtained,"total_marks"=>$totalMarks,"percentage"=>$percentage,"overall_grade"=>\App\Models\ExamResult::calculateGrade($percentage,tenant()->getSchoolId()),"result"=>$allPass&&$totalMarks>0?"PASS":"FAIL","rank"=>0];
         })->sortByDesc("total_obtained")->values();
 $rank=1;
-foreach($summary as $i=>$row){
-    if($i>0&&$row["total_obtained"]===$summary[$i-1]["total_obtained"]){
-        $summary[$i]["rank"]=$summary[$i-1]["rank"];
-    }else{
-        $summary[$i]["rank"]=$rank;
-    }
-    $rank++;
-}
+$summaryArray = $summary->toArray();
+        $rank = 1;
+        foreach ($summaryArray as $i => $row) {
+            if ($i > 0 && $row['total_obtained'] === $summaryArray[$i-1]['total_obtained']) {
+                $summaryArray[$i]['rank'] = $summaryArray[$i-1]['rank'];
+            } else {
+                $summaryArray[$i]['rank'] = $rank;
+            }
+            $rank++;
+        }
+        $this->results = $summaryArray;
 $this->results=$summary->toArray();
     }
 
