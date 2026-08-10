@@ -24,7 +24,7 @@ class SectionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('academic_year_id')
+            Forms\Components\Select::make('academic_year_id')->native()
                 ->label('Academic Year')
                 ->options(fn () => AcademicYear::all()->pluck('name', 'id'))
                 ->required()
@@ -53,7 +53,7 @@ class SectionResource extends Resource
                 ->minValue(1)
                 ->maxValue(100),
 
-            Forms\Components\Select::make('class_teacher_id')
+            Forms\Components\Select::make('class_teacher_id')->native()
                 ->label('Class Teacher')
                 ->options(fn () =>
                     User::where('role', 'teacher')

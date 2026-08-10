@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant'      => IdentifyTenant::class,
             'portal.role' => EnsurePortalRole::class,
         ]);
-
+        $middleware->trustProxies(at: '*');
         // This line is the fix — it makes sure every request
         // (including the background "create/save" requests)
         // knows which school it belongs to.
