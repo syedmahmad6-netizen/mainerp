@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ImpersonateController;
 use App\Http\Controllers\Portal\ParentPortalController;
 use App\Http\Controllers\Portal\PortalAuthController;
 use App\Http\Controllers\Portal\StudentPortalController;
@@ -8,7 +8,7 @@ use App\Http\Middleware\IdentifyTenant;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware([IdentifyTenant::class])->group(function () {
-
+    Route::get('/impersonate/{token}', [ImpersonateController::class, 'handle'])->name('impersonate.handle');
     Route::get('/', [SchoolLandingController::class, 'index'])->name('school.home');
 
     Route::get('/login',   [PortalAuthController::class,'showLogin'])->name('portal.login');
