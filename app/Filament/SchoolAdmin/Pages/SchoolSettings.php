@@ -35,6 +35,9 @@ class SchoolSettings extends Page
             'pass_percentage'  => $school->settings['pass_percentage'] ?? 40,
             'grading_system'   => $school->settings['grading_system']  ?? 'percentage',
             'sms_enabled'      => $school->settings['sms_enabled']     ?? false,
+            'sms_provider'  => $school->settings['sms_provider']  ?? 'niosms',
+            'sms_api_key'   => $school->settings['sms_api_key']   ?? '',
+            'sms_sender_id' => $school->settings['sms_sender_id'] ?? 'GNOSIS',
         ]);
     }
 
@@ -112,9 +115,31 @@ class SchoolSettings extends Page
                             ->minValue(1)
                             ->maxValue(28)
                             ->suffix('th of month'),
+                        
+                        Forms\Components\Select::make('sms_provider')
+                           ->label('SMS Provider')
+                           ->options([
+                                'niosms' => 'NioSMS (Pakistan)',
+                                'twilio' => 'Twilio (International)',
+    ])
+                           ->visible(fn (Forms\Get $get) => $get('sms_enabled')),
+
+                        Forms\Components\TextInput::make('sms_api_key')
+                           ->label('SMS API Key')
+                           ->password()
+                           ->revealable()
+                           ->visible(fn (Forms\Get $get) => $get('sms_enabled'))
+                           ->helperText('Get this from your NioSMS or Twilio account dashboard.'),
+
+                         Forms\Components\TextInput::make('sms_sender_id')
+                           ->label('Sender ID / Name')
+                           ->maxLength(11)
+                           ->visible(fn (Forms\Get $get) => $get('sms_enabled'))
+                           ->helperText('Shown as the sender name on the recipient\'s phone. Max 11 characters.'),
 
                         Forms\Components\Toggle::make('sms_enabled')
-                            ->label('SMS Notifications Enabled'),
+                            ->label('SMS Notifications Enabled')
+                                ->live(),
                     ])->columns(2),
             ])
             ->statePath('data');
@@ -134,10 +159,13 @@ class SchoolSettings extends Page
             'province' => $data['province'],
             'logo'     => $data['logo'],
             'settings' => [
-                'fee_due_day'     => $data['fee_due_day'],
-                'pass_percentage' => $data['pass_percentage'],
-                'grading_system'  => $data['grading_system'],
-                'sms_enabled'     => $data['sms_enabled'],
+            'fee_due_day'     => $data['fee_due_day'],
+            'pass_percentage' => $data['pass_percentage'],
+            'grading_system'  => $data['grading_system'],
+            'sms_enabled'     => $data['sms_enabled'],
+            'sms_provider'    => $data['sms_provider']  ?? 'niosms',
+            'sms_api_key'     => $data['sms_api_key']   ?? '',
+            'sms_sender_id'   => $data['sms_sender_id'] ?? 'GNOSIS',
             ],
         ]);
 

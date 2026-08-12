@@ -4,6 +4,7 @@ namespace App\Filament\SchoolAdmin\Resources;
 
 use App\Filament\SchoolAdmin\Resources\ParentResource\Pages;
 use App\Models\ParentProfile;
+use App\Models\StudentProfile;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -49,7 +50,7 @@ class ParentResource extends Resource
                     Forms\Components\TextInput::make('email')
                         ->label('Email Address')
                         ->email()
-                        ->unique('users', 'email')
+                        ->unique('users', 'email', ignorable: fn ($record) => $record?->user)
                         ->helperText('Required for parent portal login. Optional if parent does not need login.'),
 
                     Forms\Components\TextInput::make('cnic')
@@ -61,6 +62,24 @@ class ParentResource extends Resource
                         ->label('Occupation')
                         ->maxLength(100),
                 ])->columns(2),
+
+            Forms\Components\Section::make('Link to Children')
+                ->schema([
+                    Forms\Components\Select::make('student_ids')
+                        ->label('Children (Students)')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->options(fn () =>
+                            StudentProfile::with('user')
+                                ->where('status', 'active')
+                                ->get()
+                                ->mapWithKeys(fn ($s) => [
+                                    $s->id => ($s->admission_number ?? '') . ' — ' . ($s->user->name ?? 'Unnamed'),
+                                ])
+                        )
+                        ->helperText('Select one or more students this parent is linked to. You can also link a parent from a student\'s own page.'),
+                ]),
 
             Forms\Components\Section::make('Portal Access')
                 ->schema([

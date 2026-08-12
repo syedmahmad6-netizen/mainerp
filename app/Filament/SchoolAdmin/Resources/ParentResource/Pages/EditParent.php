@@ -3,11 +3,9 @@
 namespace App\Filament\SchoolAdmin\Resources\ParentResource\Pages;
 
 use App\Filament\SchoolAdmin\Resources\ParentResource;
-use App\Models\ParentProfile;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class EditParent extends EditRecord
 {
@@ -15,9 +13,7 @@ class EditParent extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        return [Actions\DeleteAction::make()];
     }
 
     protected function getRedirectUrl(): string
@@ -27,40 +23,38 @@ class EditParent extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $user = $this->record->user;
-
-        $data['name']  = $user?->name;
-        $data['email'] = str_contains($user?->email ?? '', '.local') ? '' : $user?->email;
-        $data['phone'] = $user?->phone;
+        $data['name']  = $this->record->user->name  ?? null;
+        $data['email'] = $this->record->user->email ?? null;
+        $data['phone'] = $this->record->user->phone ?? null;
+        $data['student_ids'] = $this->record->students()->pluck('student_profiles.id')->toArray();
 
         return $data;
     }
 
-    protected function handleRecordUpdate(Model $record, array $data): Model
+    protected function handleRecordUpdate($record, array $data): Model
     {
-        /** @var ParentProfile $record */
-        return DB::transaction(function () use ($record, $data) {
+        $schoolId = tenant()->getSchoolId();
 
-            $updateUserData = [
-                'name'  => $data['name'],
-                'phone' => $data['phone'],
-            ];
+        $record->user()->update([
+            'name'  => $data['name'],
+            'email' => $data['email'] ?? $record->user->email,
+            'phone' => $data['phone'],
+        ]);
 
-            // Only update email if a real one was provided
-            if (! empty($data['email'])) {
-                $updateUserData['email']     = $data['email'];
-                $updateUserData['is_active'] = true;
-            }
+        $record->update([
+            'cnic'         => $data['cnic']       ?? null,
+            'occupation'   => $data['occupation'] ?? null,
+            'relationship' => $data['relationship'],
+        ]);
 
-            $record->user->update($updateUserData);
+        // Sync linked students — pass school_id explicitly for the pivot table
+        $studentIds = $data['student_ids'] ?? [];
+        $syncData = collect($studentIds)->mapWithKeys(fn ($id) => [
+            $id => ['school_id' => $schoolId],
+        ])->toArray();
 
-            $record->update([
-                'cnic'         => $data['cnic']         ?? null,
-                'occupation'   => $data['occupation']   ?? null,
-                'relationship' => $data['relationship'],
-            ]);
+        $record->students()->sync($syncData);
 
-            return $record;
-        });
+        return $record;
     }
 }
