@@ -60,13 +60,15 @@ class TeacherResource extends Resource
                         ->tel()
                         ->required(),
 
-                    Forms\Components\TextInput::make('email')
-                        ->label('Email Address')
+                    
+                    
+                        Forms\Components\TextInput::make('email')
+                        ->label('Email (optional)')
                         ->email()
-                        ->unique('users', 'email')
-                        ->helperText('Used for portal login. Required.'),
-
-                    Forms\Components\DatePicker::make('date_of_birth')
+                        ->unique(table: 'users', column: 'email')
+                        ->helperText('Leave blank to auto-generate a portal login email.'),
+                    
+                        Forms\Components\DatePicker::make('date_of_birth')
                         ->label('Date of Birth')
                         ->maxDate(today()->subYears(18)),
 

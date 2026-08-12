@@ -106,7 +106,7 @@ class ViewStudent extends ViewRecord
                     TextEntry::make('date_of_birth')
                         ->label('Date of Birth')
                         ->date('d M Y')
-                        ->default('—'),
+                        ->placeholder('—'),
 
                     TextEntry::make('gender')
                         ->label('Gender')

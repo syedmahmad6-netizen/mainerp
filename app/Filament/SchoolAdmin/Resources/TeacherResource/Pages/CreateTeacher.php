@@ -34,9 +34,12 @@ class CreateTeacher extends CreateRecord
                 : TeacherProfile::generateEmployeeId();
 
             // ── Step 2: Email & password ──────────────────────────────────
-            // Teachers always get portal login — email is required
-            $email        = $data['email'];
-            $tempPassword = Str::random(10);
+// Real email if provided, otherwise auto-generate one for portal login
+$email = ! empty($data['email'])
+    ? $data['email']
+    : Str::slug($data['name']) . '.' . Str::random(4) . '@' . tenant()->getSchool()->subdomain . '.local';
+
+$tempPassword = Str::random(10);
 
             // ── Step 3: Create User account ───────────────────────────────
             $user = User::create([
