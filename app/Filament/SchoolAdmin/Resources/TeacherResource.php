@@ -65,7 +65,8 @@ class TeacherResource extends Resource
                         Forms\Components\TextInput::make('email')
                         ->label('Email (optional)')
                         ->email()
-                        ->unique(table: 'users', column: 'email')
+                        ->unique(table: 'users', column: 'email', ignorable: fn ($record) => $record?->user)
+                        
                         ->helperText('Leave blank to auto-generate a portal login email.'),
                     
                         Forms\Components\DatePicker::make('date_of_birth')
